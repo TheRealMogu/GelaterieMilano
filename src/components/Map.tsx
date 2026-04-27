@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react'
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, useMap, CircleMarker } from 'react-leaflet'
 import L from 'leaflet'
 import type { Map as LeafletMap } from 'leaflet'
-import type { Gelateria } from '../App'
+import type { Gelateria, UserLocation } from '../App'
 
 const MILAN_CENTER: [number, number] = [45.4654, 9.1866]
 
@@ -33,9 +33,10 @@ interface Props {
   activeId: number | null
   onMarkerClick: (id: number) => void
   mapRef: React.MutableRefObject<LeafletMap | null>
+  userLocation: UserLocation | null
 }
 
-export default function Map({ gelaterie, activeId, onMarkerClick, mapRef }: Props) {
+export default function Map({ gelaterie, activeId, onMarkerClick, mapRef, userLocation }: Props) {
   const markerRefs = useRef<Record<number, L.Marker>>({})
 
   useEffect(() => {
@@ -57,6 +58,38 @@ export default function Map({ gelaterie, activeId, onMarkerClick, mapRef }: Prop
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
       />
+      {userLocation && (
+        <>
+          <CircleMarker
+            center={[userLocation.lat, userLocation.lng]}
+            radius={8}
+            pathOptions={{
+              color: '#ffffff',
+              weight: 3,
+              fillColor: '#3b82f6',
+              fillOpacity: 1,
+            }}
+          >
+            <Popup>
+              <div className="p-3">
+                <p className="font-semibold text-stone-800 text-sm">📍 La tua posizione</p>
+                <p className="text-xs text-stone-500 mt-0.5">Le gelaterie sono ordinate per distanza</p>
+              </div>
+            </Popup>
+          </CircleMarker>
+          <CircleMarker
+            center={[userLocation.lat, userLocation.lng]}
+            radius={20}
+            pathOptions={{
+              color: '#3b82f6',
+              weight: 1,
+              fillColor: '#3b82f6',
+              fillOpacity: 0.15,
+            }}
+            interactive={false}
+          />
+        </>
+      )}
       {gelaterie.map((g) => (
         <Marker
           key={g.id}

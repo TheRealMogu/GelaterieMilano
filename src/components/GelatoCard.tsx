@@ -1,4 +1,5 @@
-import type { Gelateria } from '../App'
+import type { Gelateria, UserLocation } from '../App'
+import { formatDistance, haversineDistance } from '../utils/distance'
 
 const TYPE_LABELS: Record<string, string> = {
   artigianale: 'Artigianale',
@@ -18,9 +19,14 @@ interface Props {
   gelateria: Gelateria
   isActive: boolean
   onClick: (g: Gelateria) => void
+  userLocation: UserLocation | null
 }
 
-export default function GelatoCard({ gelateria: g, isActive, onClick }: Props) {
+export default function GelatoCard({ gelateria: g, isActive, onClick, userLocation }: Props) {
+  const distance = userLocation
+    ? haversineDistance(userLocation.lat, userLocation.lng, g.lat, g.lng)
+    : null
+
   return (
     <button
       onClick={() => onClick(g)}
@@ -39,6 +45,11 @@ export default function GelatoCard({ gelateria: g, isActive, onClick }: Props) {
             <span className="flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-medium bg-stone-100 text-stone-600 border border-stone-200">
               {g.zone}
             </span>
+            {distance !== null && (
+              <span className="flex-shrink-0 px-2 py-0.5 rounded-full text-[10px] font-medium bg-rose-50 text-rose-700 border border-rose-200">
+                📍 {formatDistance(distance)}
+              </span>
+            )}
           </div>
           <p className="text-xs text-stone-500 mt-0.5 truncate">{g.address}</p>
         </div>
