@@ -1,5 +1,9 @@
+import type { UserLocation } from '../App'
+
 const ZONES = ['Tutti', 'Centro', 'Navigli', 'Brera', 'Isola', 'Porta Romana', 'Città Studi']
-const TYPES = ['Tutti', 'Artigianale', 'Cremeria', 'Granite']
+const TYPES = ['Tutti', 'Artigianale', 'Cremeria', 'Granite', 'Yogurt']
+
+type GeoStatus = 'idle' | 'loading' | 'denied' | 'unavailable'
 
 interface Props {
   selectedZone: string
@@ -7,9 +11,37 @@ interface Props {
   onZoneChange: (zone: string) => void
   onTypeChange: (type: string) => void
   count: number
+  userLocation: UserLocation | null
+  geoStatus: GeoStatus
+  onRequestLocation: () => void
+  onClearLocation: () => void
 }
 
-export default function FilterBar({ selectedZone, selectedType, onZoneChange, onTypeChange, count }: Props) {
+export default function FilterBar({
+  selectedZone,
+  selectedType,
+  onZoneChange,
+  onTypeChange,
+  count,
+  userLocation,
+  geoStatus,
+  onRequestLocation,
+  onClearLocation,
+}: Props) {
+  const geoLabel =
+    geoStatus === 'loading'
+      ? 'Localizzazione...'
+      : geoStatus === 'denied'
+        ? 'Permesso negato'
+        : geoStatus === 'unavailable'
+          ? 'Non disponibile'
+          : userLocation
+            ? 'Ordinato per distanza'
+            : 'Vicino a me'
+
+  const geoActive = !!userLocation
+  const geoDisabled = geoStatus === 'loading'
+
   return (
     <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
       {/* Zone filter */}
@@ -49,6 +81,24 @@ export default function FilterBar({ selectedZone, selectedType, onZoneChange, on
             {type}
           </button>
         ))}
+      </div>
+
+      {/* Geolocation */}
+      <div className="flex items-center gap-1.5">
+        <button
+          onClick={geoActive ? onClearLocation : onRequestLocation}
+          disabled={geoDisabled}
+          className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-colors ${
+            geoActive
+              ? 'bg-rose-500 text-white shadow-sm hover:bg-rose-600'
+              : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
+          } ${geoDisabled ? 'opacity-60 cursor-wait' : ''}`}
+          title={geoActive ? 'Rimuovi la mia posizione' : 'Trova le gelaterie più vicine'}
+        >
+          <span>📍</span>
+          <span>{geoLabel}</span>
+          {geoActive && <span className="ml-0.5 opacity-80">✕</span>}
+        </button>
       </div>
 
       {/* Count */}
