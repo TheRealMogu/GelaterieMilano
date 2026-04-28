@@ -27,9 +27,9 @@ export interface UserLocation {
 
 const data = gelaterie as Gelateria[]
 
-function IceCreamLogo({ size = 32 }: { size?: number }) {
+function IceCreamLogo({ size = 24, className = '' }: { size?: number; className?: string }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width={size} height={size} className={className} viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="16" cy="13" r="12" fill="#5B7B5A" />
       <circle cx="11" cy="9" r="3" fill="#D4E8D3" opacity="0.55" />
       <path d="M5 21 L16 38 L27 21 Z" fill="#9C6B3C" />
@@ -118,9 +118,9 @@ export default function App() {
   return (
     <div className="flex flex-col bg-cream font-sans" style={{ height: '100dvh', minHeight: '100vh' }}>
       {/* Header */}
-      <header className="flex-shrink-0 bg-cream border-b border-cream-dark shadow-sm px-4 py-3">
+      <header className="flex-shrink-0 bg-cream border-b border-cream-dark shadow-sm px-4 py-2.5 md:py-3">
         <div className="max-w-screen-xl mx-auto flex items-center gap-3">
-          <IceCreamLogo size={36} />
+          <IceCreamLogo size={24} className="md:w-7 md:h-7" />
           <div>
             <h1 className="text-lg font-bold text-stone-800 leading-tight">Gelaterie Milano</h1>
             <p className="text-xs text-muted hidden sm:block">Le migliori gelaterie artigianali della città</p>
@@ -162,18 +162,18 @@ export default function App() {
           {/* List: bottom sheet on mobile, right sidebar on desktop */}
           <div
             className={
-              'absolute bottom-0 left-0 right-0 max-h-[65vh] overflow-y-auto bg-white rounded-t-2xl shadow-2xl ' +
+              'absolute bottom-0 left-0 right-0 max-h-[58vh] overflow-y-auto bg-white rounded-t-2xl shadow-2xl ' +
               'md:static md:flex-[2] md:max-h-none md:rounded-none md:shadow-none md:border-l md:border-stone-200 ' +
               'gelato-list'
             }
           >
-            <div className="flex justify-center pt-3 pb-1 md:hidden">
-              <div className="w-10 h-1 bg-stone-200 rounded-full" />
+            <div className="flex justify-center pt-2 pb-1 flex-shrink-0 md:hidden">
+              <div className="w-8 h-1 bg-stone-200 rounded-full" />
             </div>
-            <p className="text-xs text-center text-muted pb-2 md:hidden">
-              {filtered.length} gelaterie trovate
+            <p className="text-[11px] text-center text-muted pb-1.5 md:hidden">
+              {filtered.length} gelaterie
             </p>
-            <div className="px-3 pb-6 md:p-3 space-y-2">
+            <div className="px-3 pb-8 md:p-3 space-y-3">
               {filtered.length === 0 ? (
                 <EmptyState />
               ) : (
