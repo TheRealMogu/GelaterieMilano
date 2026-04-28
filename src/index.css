@@ -4,14 +4,17 @@
 @tailwind components;
 @tailwind utilities;
 
-/* dvh for iOS safari (address bar shrinks/hides) */
 html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
 }
 
-/* Hide scrollbar on filter pill rows but keep scroll */
+body {
+  font-family: 'Satoshi', sans-serif;
+}
+
+/* Hide scrollbar on pill rows, keep scroll */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -29,7 +32,7 @@ html, body, #root {
 
 .emoji-marker-active {
   font-size: 2.1rem;
-  filter: drop-shadow(0 2px 6px rgba(0, 137, 123, 0.65));
+  filter: drop-shadow(0 2px 6px rgba(91, 123, 90, 0.65));
 }
 
 /* Leaflet popup */
@@ -37,7 +40,7 @@ html, body, #root {
   border-radius: 0.75rem !important;
   padding: 0 !important;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
 }
 
 .leaflet-popup-content {
@@ -50,9 +53,9 @@ html, body, #root {
 }
 
 /* List scrollbar */
-.gelato-list::-webkit-scrollbar { width: 6px; }
-.gelato-list::-webkit-scrollbar-track { background: #f5f5f0; }
-.gelato-list::-webkit-scrollbar-thumb { background: #b2dfdb; border-radius: 3px; }
+.gelato-list::-webkit-scrollbar { width: 5px; }
+.gelato-list::-webkit-scrollbar-track { background: transparent; }
+.gelato-list::-webkit-scrollbar-thumb { background: #D4E8D3; border-radius: 4px; }
 
-/* Touch: remove blue tap flash */
+/* Touch */
 button, a { -webkit-tap-highlight-color: transparent; }

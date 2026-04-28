@@ -5,14 +5,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        teal: {
-          600: '#00897b',
-          700: '#00796b',
-          800: '#00695c',
-        },
+        cream: { DEFAULT: '#FAF7F0', dark: '#F0EBE0' },
+        pistachio: { DEFAULT: '#5B7B5A', light: '#D4E8D3', dark: '#3D5C3C' },
+        fragola: { DEFAULT: '#D95F6A', light: '#FADDE0' },
+        nocciola: { DEFAULT: '#9C6B3C', light: '#F0E0CC' },
+        muted: '#6B6560',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Satoshi', 'system-ui', 'sans-serif'],
       },
     },
   },

@@ -27,11 +27,35 @@ export interface UserLocation {
 
 const data = gelaterie as Gelateria[]
 
+function IceCreamLogo({ size = 32 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 32 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="16" cy="13" r="12" fill="#5B7B5A" />
+      <circle cx="11" cy="9" r="3" fill="#D4E8D3" opacity="0.55" />
+      <path d="M5 21 L16 38 L27 21 Z" fill="#9C6B3C" />
+      <line x1="8" y1="25" x2="24" y2="25" stroke="#FAF7F0" strokeWidth="1" strokeLinecap="round" />
+      <line x1="10" y1="30" x2="22" y2="30" stroke="#FAF7F0" strokeWidth="1" strokeLinecap="round" />
+      <line x1="13" y1="35" x2="19" y2="35" stroke="#FAF7F0" strokeWidth="1" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function EmptyState() {
+  return (
+    <div className="text-center py-12 text-stone-400">
+      <div className="flex justify-center mb-3 opacity-30">
+        <IceCreamLogo size={52} />
+      </div>
+      <p className="text-sm font-medium">Nessuna gelateria trovata</p>
+      <p className="text-xs mt-1">Prova a cambiare i filtri</p>
+    </div>
+  )
+}
+
 export default function App() {
   const [selectedZone, setSelectedZone] = useState<string>('Tutti')
   const [selectedType, setSelectedType] = useState<string>('Tutti')
   const [activeId, setActiveId] = useState<number | null>(null)
-  const [mobileView, setMobileView] = useState<'map' | 'list'>('map')
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null)
   const [geoStatus, setGeoStatus] = useState<'idle' | 'loading' | 'denied' | 'unavailable'>('idle')
   const mapRef = useRef<LeafletMap | null>(null)
@@ -54,7 +78,6 @@ export default function App() {
 
   const handleCardClick = useCallback((g: Gelateria) => {
     setActiveId(g.id)
-    setMobileView('map')
     if (mapRef.current) {
       mapRef.current.setView([g.lat, g.lng], 16, { animate: true })
     }
@@ -75,7 +98,6 @@ export default function App() {
         const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude }
         setUserLocation(loc)
         setGeoStatus('idle')
-        setMobileView('map')
         if (mapRef.current) {
           mapRef.current.setView([loc.lat, loc.lng], 14, { animate: true })
         }
@@ -94,24 +116,20 @@ export default function App() {
   }, [])
 
   return (
-    <div className="flex flex-col bg-[#faf9f5] font-sans" style={{ height: '100dvh', minHeight: '100vh' }}>
+    <div className="flex flex-col bg-cream font-sans" style={{ height: '100dvh', minHeight: '100vh' }}>
       {/* Header */}
-      <header className="flex-shrink-0 bg-white border-b border-stone-200 shadow-sm px-4 py-3">
+      <header className="flex-shrink-0 bg-cream border-b border-cream-dark shadow-sm px-4 py-3">
         <div className="max-w-screen-xl mx-auto flex items-center gap-3">
-          <span className="text-2xl">🍦</span>
+          <IceCreamLogo size={36} />
           <div>
-            <h1 className="text-lg font-bold text-stone-800 leading-tight">
-              Gelaterie Milano
-            </h1>
-            <p className="text-xs text-stone-500 hidden sm:block">
-              Le migliori gelaterie artigianali della città
-            </p>
+            <h1 className="text-lg font-bold text-stone-800 leading-tight">Gelaterie Milano</h1>
+            <p className="text-xs text-muted hidden sm:block">Le migliori gelaterie artigianali della città</p>
           </div>
         </div>
       </header>
 
       {/* Filter bar */}
-      <div className="flex-shrink-0 bg-white border-b border-stone-200">
+      <div className="flex-shrink-0 bg-cream border-b border-cream-dark">
         <div className="max-w-screen-xl mx-auto">
           <FilterBar
             selectedZone={selectedZone}
@@ -127,71 +145,49 @@ export default function App() {
         </div>
       </div>
 
-      {/* Mobile tab switcher */}
-      <div className="md:hidden flex-shrink-0 flex bg-white border-b border-stone-200">
-        <button
-          onClick={() => setMobileView('map')}
-          className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
-            mobileView === 'map'
-              ? 'text-[#00897b] border-b-2 border-[#00897b]'
-              : 'text-stone-500'
-          }`}
-        >
-          🗺 Mappa
-        </button>
-        <button
-          onClick={() => setMobileView('list')}
-          className={`flex-1 py-2.5 text-sm font-medium transition-colors ${
-            mobileView === 'list'
-              ? 'text-[#00897b] border-b-2 border-[#00897b]'
-              : 'text-stone-500'
-          }`}
-        >
-          📋 Lista ({filtered.length})
-        </button>
-      </div>
-
       {/* Main content */}
-      <div className="flex-1 overflow-hidden flex flex-col md:flex-row max-w-screen-xl w-full mx-auto">
-        {/* Map panel */}
-        <div
-          className={`${
-            mobileView === 'map' ? 'flex' : 'hidden'
-          } md:flex flex-col flex-1 md:flex-[3] relative`}
-        >
-          <Map
-            gelaterie={filtered}
-            activeId={activeId}
-            onMarkerClick={handleMarkerClick}
-            mapRef={mapRef}
-            userLocation={userLocation}
-          />
-        </div>
+      <div className="flex-1 min-h-0 overflow-hidden">
+        <div className="relative h-full md:flex md:max-w-screen-xl md:w-full md:mx-auto">
+          {/* Map: fills screen on mobile, flex-[3] sidebar on desktop */}
+          <div className="absolute inset-0 md:static md:flex-[3]">
+            <Map
+              gelaterie={filtered}
+              activeId={activeId}
+              onMarkerClick={handleMarkerClick}
+              mapRef={mapRef}
+              userLocation={userLocation}
+            />
+          </div>
 
-        {/* List panel */}
-        <div
-          className={`${
-            mobileView === 'list' ? 'flex' : 'hidden'
-          } md:flex flex-col flex-1 md:flex-[2] overflow-y-auto gelato-list md:border-l border-stone-200`}
-        >
-          <div className="p-3 space-y-2">
-            {filtered.length === 0 ? (
-              <div className="text-center py-12 text-stone-400">
-                <span className="text-4xl block mb-2">🍦</span>
-                <p className="text-sm">Nessuna gelateria trovata</p>
-                <p className="text-xs mt-1">Prova a cambiare i filtri</p>
-              </div>
-            ) : (
-              filtered.map((g) => (
-                <GelatoCard
-                  key={g.id}
-                  gelateria={g}
-                  isActive={g.id === activeId}
-                  onClick={handleCardClick}
-                  userLocation={userLocation}
-                />
-              ))
-            )}
+          {/* List: bottom sheet on mobile, right sidebar on desktop */}
+          <div
+            className={
+              'absolute bottom-0 left-0 right-0 max-h-[65vh] overflow-y-auto bg-white rounded-t-2xl shadow-2xl ' +
+              'md:static md:flex-[2] md:max-h-none md:rounded-none md:shadow-none md:border-l md:border-stone-200 ' +
+              'gelato-list'
+            }
+          >
+            <div className="flex justify-center pt-3 pb-1 md:hidden">
+              <div className="w-10 h-1 bg-stone-200 rounded-full" />
+            </div>
+            <p className="text-xs text-center text-muted pb-2 md:hidden">
+              {filtered.length} gelaterie trovate
+            </p>
+            <div className="px-3 pb-6 md:p-3 space-y-2">
+              {filtered.length === 0 ? (
+                <EmptyState />
+              ) : (
+                filtered.map((g) => (
+                  <GelatoCard
+                    key={g.id}
+                    gelateria={g}
+                    isActive={g.id === activeId}
+                    onClick={handleCardClick}
+                    userLocation={userLocation}
+                  />
+                ))
+              )}
+            </div>
           </div>
         </div>
       </div>
