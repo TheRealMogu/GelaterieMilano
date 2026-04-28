@@ -17,6 +17,8 @@ body {
 /* Hide scrollbar on pill rows, keep scroll */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { scrollbar-width: none; }
 
 /* Emoji markers */
 .emoji-marker {

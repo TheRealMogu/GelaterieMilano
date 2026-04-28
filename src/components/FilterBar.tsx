@@ -17,7 +17,7 @@ interface Props {
   onClearLocation: () => void
 }
 
-const pillBase = 'px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-colors min-h-[32px] border'
+const pillBase = 'px-4 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-colors min-h-[36px] border'
 const pillInactive = 'bg-white border-stone-200 text-stone-600 hover:border-stone-300 hover:bg-stone-50 active:bg-stone-100'
 const pillActive = 'bg-pistachio text-white border-pistachio shadow-sm'
 
@@ -47,12 +47,12 @@ export default function FilterBar({
 
   return (
     <div className="px-3 py-2 space-y-1.5">
-      {/* Zone row */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-        <span className="text-[10px] font-semibold text-muted uppercase tracking-wide flex-shrink-0 select-none">
+      {/* Zone row — label fixed, pills scroll */}
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-semibold text-muted uppercase tracking-wider flex-shrink-0 w-10 select-none">
           Zona
         </span>
-        <div className="flex gap-1.5">
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-0.5 flex-1">
           {ZONES.map((zone) => (
             <button
               key={zone}
@@ -65,12 +65,12 @@ export default function FilterBar({
         </div>
       </div>
 
-      {/* Type + geo + count row */}
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-        <span className="text-[10px] font-semibold text-muted uppercase tracking-wide flex-shrink-0 select-none">
+      {/* Type row — label fixed, pills scroll, geo + count fixed right */}
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] font-semibold text-muted uppercase tracking-wider flex-shrink-0 w-10 select-none">
           Tipo
         </span>
-        <div className="flex gap-1.5 flex-shrink-0">
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-0.5 flex-1">
           {TYPES.map((type) => {
             const val = type === 'Tutti' ? 'Tutti' : type.toLowerCase()
             return (
@@ -84,20 +84,17 @@ export default function FilterBar({
             )
           })}
         </div>
-
-        <div className="ml-auto flex items-center gap-2 flex-shrink-0 pl-1">
-          <button
-            onClick={geoActive ? onClearLocation : onRequestLocation}
-            disabled={geoDisabled}
-            className={`${pillBase} ${geoActive ? pillActive : pillInactive} ${geoDisabled ? 'opacity-60 cursor-wait' : ''}`}
-          >
-            📍 {geoLabel}
-          </button>
-          <span className="text-xs text-muted whitespace-nowrap">
-            <span className="font-bold text-pistachio">{count}</span>{' '}
-            <span className="hidden sm:inline">trovate</span>
-          </span>
-        </div>
+        <button
+          onClick={geoActive ? onClearLocation : onRequestLocation}
+          disabled={geoDisabled}
+          className={`${pillBase} flex-shrink-0 ${geoActive ? pillActive : pillInactive} ${geoDisabled ? 'opacity-60 cursor-wait' : ''}`}
+        >
+          📍 {geoLabel}
+        </button>
+        <span className="text-xs text-muted whitespace-nowrap flex-shrink-0">
+          <span className="font-bold text-pistachio">{count}</span>
+          <span className="hidden sm:inline"> trovate</span>
+        </span>
       </div>
     </div>
   )
