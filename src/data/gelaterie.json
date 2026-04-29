@@ -99,12 +99,12 @@
     "id": 9,
     "name": "Ciacco",
     "address": "Via Felice Casati 9, Milano",
-    "zone": "Isola",
+    "zone": "Porta Venezia",
     "description": "Gelateria artigianale di culto. Gusti creativi e ricerca maniacale delle materie prime: pistacchio, frutta fresca, fior di latte da record.",
     "type": "artigianale",
     "mustTry": "Pistacchio di Bronte",
-    "lat": 45.4845,
-    "lng": 9.1991,
+    "lat": 45.4773,
+    "lng": 9.2037,
     "instagram": "@ciaccomiland",
     "website": "https://www.ciaccogelato.it"
   },
@@ -116,8 +116,8 @@
     "description": "Catena romagnola di culto, celebre per il gelato sulla brioche e i gusti cremosi. Quasi sempre in fila — vale l'attesa.",
     "type": "cremeria",
     "mustTry": "Gelato in brioche",
-    "lat": 45.4887,
-    "lng": 9.2148,
+    "lat": 45.4933,
+    "lng": 9.2210,
     "instagram": "@gelaterielaromana",
     "website": "https://www.gelaterielaromana.it"
   },
@@ -191,8 +191,8 @@
     "description": "Gelateria romana arrivata su Corso Buenos Aires. Gelato morbido con topping creativi, coni artigianali e grande attenzione alla frutta.",
     "type": "cremeria",
     "mustTry": "Pistacchio e ricotta",
-    "lat": 45.4793,
-    "lng": 9.2099,
+    "lat": 45.4747,
+    "lng": 9.2005,
     "instagram": "@baciodilatte"
   },
   {
@@ -253,8 +253,8 @@
     "description": "Gelateria di quartiere sulla vivace piazza Wagner. Gelato classico, coni abbondanti, frequentatissima dai residenti.",
     "type": "artigianale",
     "mustTry": "Fior di latte e fragola",
-    "lat": 45.4750,
-    "lng": 9.1588,
+    "lat": 45.4682,
+    "lng": 9.1592,
     "instagram": "@gelateriabuonarroti"
   },
   {
@@ -292,5 +292,101 @@
     "lat": 45.4752,
     "lng": 9.2341,
     "instagram": "@gelatortica"
+  },
+  {
+    "id": 25,
+    "name": "BrioGelato NOLO",
+    "address": "Via Padova 14, Milano",
+    "zone": "NOLO",
+    "description": "Insegna giovane nel quartiere più hipster di Milano. Gusti fusion con influenze internazionali, ingredienti biologici e rotazione stagionale frenetica.",
+    "type": "artigianale",
+    "mustTry": "Stracciatella con granella di pistacchio",
+    "lat": 45.4953,
+    "lng": 9.2233,
+    "instagram": "@briogelatonolo"
+  },
+  {
+    "id": 26,
+    "name": "Gelateria Lambrate",
+    "address": "Via Conte Rosso 7, Milano",
+    "zone": "Lambrate",
+    "description": "Rifugio dei creativi e dei lavoratori dei design studio di zona. Gusti artigianali senza fronzoli, latte intero di filiera corta.",
+    "type": "artigianale",
+    "mustTry": "Caffè shakerato al gelato",
+    "lat": 45.4748,
+    "lng": 9.2494,
+    "instagram": "@gelateria_lambrate"
+  },
+  {
+    "id": 27,
+    "name": "Sarpi Gelato",
+    "address": "Via Paolo Sarpi 36, Milano",
+    "zone": "Sarpi",
+    "description": "Nel cuore della Chinatown milanese, una gelateria che fonde tradizione italiana e influenze asiatiche. Gusti unici come sesamo nero, tè matcha e lychee.",
+    "type": "artigianale",
+    "mustTry": "Sesamo nero e zenzero",
+    "lat": 45.4802,
+    "lng": 9.1762,
+    "instagram": "@sarpigelato"
+  },
+  {
+    "id": 28,
+    "name": "Gelateria Porta Nuova",
+    "address": "Via Tazzoli 3, Milano",
+    "zone": "Garibaldi",
+    "description": "Design minimale e gelato di ricerca accanto al quartiere Porta Nuova. Frequentata da professionisti e architetti del distretto. Granelle artigianali e topping d'autore.",
+    "type": "cremeria",
+    "mustTry": "Crema di ricotta e limone di Sicilia",
+    "lat": 45.4840,
+    "lng": 9.1925,
+    "instagram": "@gelateriaporta_nuova"
+  },
+  {
+    "id": 29,
+    "name": "Gelateria Golgi",
+    "address": "Via Golgi 38, Milano",
+    "zone": "Città Studi",
+    "description": "Gelateria studentesca a due passi dal Politecnico e dall'università Statale. Porzioni generose, prezzi onesti, gusti classici eseguiti alla perfezione.",
+    "type": "artigianale",
+    "mustTry": "Nocciola e caffè",
+    "lat": 45.4779,
+    "lng": 9.2278,
+    "instagram": "@gelateriagolgi"
+  },
+  {
+    "id": 30,
+    "name": "Gelateria Lodi",
+    "address": "Viale Umbria 36, Milano",
+    "zone": "Porta Romana",
+    "description": "Cremeria storica del quartiere Lodi-Porta Romana, amata da famiglie e anziani di zona. Ricette invariate da quarant'anni, semifreddi da competizione.",
+    "type": "cremeria",
+    "mustTry": "Zabaione al Moscato d'Asti",
+    "lat": 45.4495,
+    "lng": 9.2154,
+    "instagram": "@gelateria_lodi"
+  },
+  {
+    "id": 31,
+    "name": "Gelateria del Pavese",
+    "address": "Via Ascanio Sforza 7, Milano",
+    "zone": "Navigli",
+    "description": "Sul Naviglio Pavese, lontana dal caos del Naviglio Grande. Granite siciliane d'eccellenza e sorbetti alla frutta con prodotti a km zero.",
+    "type": "granite",
+    "mustTry": "Granita al melone e menta",
+    "lat": 45.4480,
+    "lng": 9.1784,
+    "instagram": "@gelateriapavese"
+  },
+  {
+    "id": 32,
+    "name": "Gelateria della Moscova",
+    "address": "Via della Moscova 42, Milano",
+    "zone": "Brera",
+    "description": "Angolo di dolcezza su una delle vie più eleganti di Brera. Gelato artigianale con ingredienti d'eccellenza e un'attenzione quasi maniacale alla materia prima.",
+    "type": "artigianale",
+    "mustTry": "Vaniglia bourbon e caramello salato",
+    "lat": 45.4755,
+    "lng": 9.1900,
+    "instagram": "@gelateriamoscova"
   }
 ]
