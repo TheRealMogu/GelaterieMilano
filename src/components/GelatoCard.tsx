@@ -17,7 +17,7 @@ export default function GelatoCard({ gelateria: g, isActive, onClick, userLocati
   return (
     <button
       onClick={() => onClick(g)}
-      className={`w-full text-left rounded-xl p-4 min-h-[80px] transition-all duration-150 border border-stone-100 shadow-sm bg-white ${
+      className={`w-full text-left rounded-2xl p-5 transition-all duration-150 border border-stone-100 shadow-sm bg-white ${
         isActive ? 'ring-2 ring-pistachio shadow-md' : 'hover:shadow-md'
       }`}
     >
@@ -28,14 +28,14 @@ export default function GelatoCard({ gelateria: g, isActive, onClick, userLocati
       </div>
 
       {/* Row 2: zone · distance · address */}
-      <p className="text-xs text-muted mt-1 truncate">
+      <p className="text-xs text-muted mt-1.5 truncate">
         {g.zone}
         {distance !== null && <> · {formatDistance(distance)}</>}
         {' · '}{g.address}
       </p>
 
       {/* Row 3: must-try with pistachio dot */}
-      <div className="mt-2.5 flex items-center gap-1.5">
+      <div className="mt-3 flex items-center gap-1.5">
         <span className="w-1.5 h-1.5 rounded-full bg-pistachio flex-shrink-0" />
         <span className="text-xs text-stone-600">
           <span className="font-medium">Da provare:</span> {g.mustTry}
@@ -43,7 +43,7 @@ export default function GelatoCard({ gelateria: g, isActive, onClick, userLocati
       </div>
 
       {/* Row 4: links + action buttons */}
-      <div className="mt-2 pt-2 border-t border-stone-100 flex items-center gap-3 flex-wrap">
+      <div className="mt-3.5 pt-3 border-t border-stone-100 flex items-center gap-3 flex-wrap">
         {g.instagram && (
           <span className="text-[10px] text-muted">{g.instagram}</span>
         )}

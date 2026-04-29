@@ -147,8 +147,8 @@ export default function App() {
 
       {/* Main content */}
       <div className="flex-1 min-h-0 overflow-hidden">
-        <div className="relative h-full md:flex md:max-w-screen-xl md:w-full md:mx-auto">
-          {/* Map: fills screen on mobile, flex-[3] sidebar on desktop */}
+        <div className="relative h-full md:flex md:gap-0 md:max-w-screen-xl md:w-full md:mx-auto">
+          {/* Map: fills screen on mobile, left panel on desktop */}
           <div className="absolute inset-0 md:static md:flex-[3]">
             <Map
               gelaterie={filtered}
@@ -162,18 +162,18 @@ export default function App() {
           {/* List: bottom sheet on mobile, right sidebar on desktop */}
           <div
             className={
-              'absolute bottom-0 left-0 right-0 max-h-[58vh] overflow-y-auto bg-white rounded-t-2xl shadow-2xl ' +
-              'md:static md:flex-[2] md:max-h-none md:rounded-none md:shadow-none md:border-l md:border-stone-200 ' +
+              'absolute bottom-0 left-0 right-0 max-h-[52vh] overflow-y-auto bg-white rounded-t-2xl shadow-2xl ' +
+              'md:static md:flex-[2] md:max-h-none md:rounded-none md:shadow-none md:border-l-2 md:border-stone-200 ' +
               'gelato-list'
             }
           >
-            <div className="flex justify-center pt-2 pb-1 flex-shrink-0 md:hidden">
-              <div className="w-8 h-1 bg-stone-200 rounded-full" />
+            <div className="flex justify-center pt-3 pb-1 flex-shrink-0 md:hidden">
+              <div className="w-10 h-1 bg-stone-300 rounded-full" />
             </div>
-            <p className="text-[11px] text-center text-muted pb-1.5 md:hidden">
+            <p className="text-[11px] text-center text-muted pb-2 md:hidden">
               {filtered.length} gelaterie
             </p>
-            <div className="px-3 pb-8 md:p-3 space-y-3">
+            <div className="px-4 pb-10 md:px-5 md:py-5 space-y-4">
               {filtered.length === 0 ? (
                 <EmptyState />
               ) : (
