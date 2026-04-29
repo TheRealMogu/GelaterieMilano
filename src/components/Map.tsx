@@ -101,6 +101,24 @@ export default function Map({ gelaterie, activeId, onMarkerClick, mapRef, userLo
                     Visita il sito ↗
                   </a>
                 )}
+                <div className="flex gap-1.5 mt-2">
+                  <a
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${g.lat},${g.lng}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 px-2 py-1 rounded bg-blue-50 hover:bg-blue-100 text-blue-600 text-[10px] font-medium"
+                  >
+                    📍 Naviga
+                  </a>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(g.name + ' ' + g.address)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 px-2 py-1 rounded bg-amber-50 hover:bg-amber-100 text-amber-600 text-[10px] font-medium"
+                  >
+                    ⭐ Recensioni
+                  </a>
+                </div>
               </div>
             </Popup>
           </Marker>
