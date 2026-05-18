@@ -14,50 +14,115 @@ body {
   font-family: 'Satoshi', sans-serif;
 }
 
-/* Hide scrollbar on pill rows, keep scroll */
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+/* ── Animations ── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.92); }
+  60%  { transform: scale(1.03); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-fade-slide-up {
+  animation: fadeSlideUp 0.38s ease forwards;
+  opacity: 0;
+}
+
+.animate-pop-in {
+  animation: popIn 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+
+/* ── Card hover lift ── */
+.gelato-card {
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.gelato-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.11);
+}
+.gelato-card:active {
+  transform: translateY(-1px);
+}
+
+/* ── Scrollbar hide ── */
+.no-scrollbar::-webkit-scrollbar  { display: none; }
+.no-scrollbar  { -ms-overflow-style: none; scrollbar-width: none; }
 .scrollbar-none::-webkit-scrollbar { display: none; }
 .scrollbar-none { scrollbar-width: none; }
 
-/* Emoji markers */
+/* ── Gelato list scrollbar ── */
+.gelato-list::-webkit-scrollbar { width: 4px; }
+.gelato-list::-webkit-scrollbar-track { background: transparent; }
+.gelato-list::-webkit-scrollbar-thumb { background: #D4E8D3; border-radius: 4px; }
+
+/* ── Emoji markers ── */
 .emoji-marker {
   background: none;
   border: none;
   font-size: 1.65rem;
   line-height: 1;
-  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.35));
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.35));
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
+  transition: transform 0.15s ease, filter 0.15s ease;
 }
-
+.emoji-marker:hover {
+  transform: scale(1.15);
+}
 .emoji-marker-active {
-  font-size: 2.1rem;
-  filter: drop-shadow(0 2px 6px rgba(91, 123, 90, 0.65));
+  font-size: 2.2rem;
+  filter: drop-shadow(0 3px 8px rgba(91,123,90,0.7));
+  transform: scale(1.1);
 }
 
-/* Leaflet popup */
+/* ── Leaflet popup ── */
 .leaflet-popup-content-wrapper {
-  border-radius: 0.75rem !important;
+  border-radius: 1rem !important;
   padding: 0 !important;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.14) !important;
+  border: 1px solid rgba(0,0,0,0.06) !important;
 }
-
 .leaflet-popup-content {
   margin: 0 !important;
-  width: 220px !important;
+  width: 240px !important;
 }
-
 .leaflet-popup-tip-container {
   margin-top: -1px;
 }
 
-/* List scrollbar */
-.gelato-list::-webkit-scrollbar { width: 5px; }
-.gelato-list::-webkit-scrollbar-track { background: transparent; }
-.gelato-list::-webkit-scrollbar-thumb { background: #D4E8D3; border-radius: 4px; }
-
-/* Touch */
+/* ── Touch highlight ── */
 button, a { -webkit-tap-highlight-color: transparent; }
+
+/* ── Filter pill active glow ── */
+.pill-active {
+  box-shadow: 0 2px 8px rgba(91,123,90,0.35);
+}
+
+/* ── Header gradient ── */
+.app-header {
+  background: linear-gradient(135deg, #FAF7F0 0%, #F0EBE0 100%);
+}
+
+/* ── Bottom sheet drag indicator ── */
+.drag-handle {
+  width: 36px;
+  height: 4px;
+  background: #D1CBC3;
+  border-radius: 2px;
+  margin: 10px auto 6px;
+}

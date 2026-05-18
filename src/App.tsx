@@ -14,6 +14,7 @@ export interface Gelateria {
   description: string
   type: 'artigianale' | 'cremeria' | 'granite' | 'yogurt'
   mustTry: string
+  rating: number
   lat: number
   lng: number
   instagram?: string
@@ -42,23 +43,34 @@ function IceCreamLogo({ size = 24, className = '' }: { size?: number; className?
 
 function EmptyState() {
   return (
-    <div className="text-center py-12 text-stone-400">
-      <div className="flex justify-center mb-3 opacity-30">
-        <IceCreamLogo size={52} />
+    <div className="text-center py-16 text-stone-400">
+      <div className="flex justify-center mb-4 opacity-25">
+        <IceCreamLogo size={56} />
       </div>
-      <p className="text-sm font-medium">Nessuna gelateria trovata</p>
-      <p className="text-xs mt-1">Prova a cambiare i filtri</p>
+      <p className="text-sm font-bold text-stone-500">Nessuna gelateria trovata</p>
+      <p className="text-xs mt-1 text-stone-400">Prova a cambiare i filtri</p>
     </div>
   )
 }
 
+const ZONE_ORDER = [
+  'Centro', 'Navigli', 'Brera', 'Isola', 'Porta Venezia',
+  'Sempione', 'Sarpi', 'Garibaldi', 'Porta Romana', 'Porta Genova',
+  'Città Studi', 'NOLO', 'Lambrate', 'Cenisio', 'Bovisa',
+]
+
 export default function App() {
   const [selectedZone, setSelectedZone] = useState<string>('Tutti')
   const [selectedType, setSelectedType] = useState<string>('Tutti')
-  const [activeId, setActiveId] = useState<number | null>(null)
+  const [activeId, setActiveId]         = useState<number | null>(null)
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null)
-  const [geoStatus, setGeoStatus] = useState<'idle' | 'loading' | 'denied' | 'unavailable'>('idle')
+  const [geoStatus, setGeoStatus]       = useState<'idle' | 'loading' | 'denied' | 'unavailable'>('idle')
   const mapRef = useRef<LeafletMap | null>(null)
+
+  const zones = useMemo(() => {
+    const inData = new Set(data.map((g) => g.zone))
+    return ZONE_ORDER.filter((z) => inData.has(z))
+  }, [])
 
   const filtered = useMemo(() => {
     const list = data.filter((g) => {
@@ -88,22 +100,16 @@ export default function App() {
   }, [])
 
   const requestLocation = useCallback(() => {
-    if (!('geolocation' in navigator)) {
-      setGeoStatus('unavailable')
-      return
-    }
+    if (!('geolocation' in navigator)) { setGeoStatus('unavailable'); return }
     setGeoStatus('loading')
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude }
         setUserLocation(loc)
         setGeoStatus('idle')
-        if (mapRef.current) {
-          mapRef.current.setView([loc.lat, loc.lng], 14, { animate: true })
-        }
+        if (mapRef.current) mapRef.current.setView([loc.lat, loc.lng], 14, { animate: true })
       },
       (err) => {
-        console.warn('Geolocation error', err)
         setGeoStatus(err.code === err.PERMISSION_DENIED ? 'denied' : 'unavailable')
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
@@ -117,21 +123,33 @@ export default function App() {
 
   return (
     <div className="flex flex-col bg-cream font-sans" style={{ height: '100dvh', minHeight: '100vh' }}>
-      {/* Header */}
-      <header className="flex-shrink-0 bg-cream border-b border-cream-dark shadow-sm px-4 py-2.5 md:py-3">
+
+      {/* ── Header ── */}
+      <header className="flex-shrink-0 app-header border-b border-cream-dark shadow-sm px-4 py-3">
         <div className="max-w-screen-xl mx-auto flex items-center gap-3">
-          <IceCreamLogo size={24} className="md:w-7 md:h-7" />
-          <div>
-            <h1 className="text-lg font-bold text-stone-800 leading-tight">Gelaterie Milano</h1>
-            <p className="text-xs text-muted hidden sm:block">Le migliori gelaterie artigianali della città</p>
+          <div className="w-9 h-9 bg-pistachio rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+            <IceCreamLogo size={22} className="brightness-[5]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <h1 className="text-base font-black text-stone-800 leading-tight tracking-tight">
+              Gelaterie Milano
+            </h1>
+            <p className="text-[11px] text-stone-500 hidden sm:block">
+              Le migliori gelaterie artigianali della città
+            </p>
+          </div>
+          <div className="flex-shrink-0 hidden sm:flex items-center gap-1.5 bg-pistachio-light px-3 py-1.5 rounded-full">
+            <span className="text-pistachio-dark text-xs font-bold">{data.length}</span>
+            <span className="text-pistachio text-xs">gelaterie</span>
           </div>
         </div>
       </header>
 
-      {/* Filter bar */}
-      <div className="flex-shrink-0 bg-cream border-b border-cream-dark">
+      {/* ── Filter bar ── */}
+      <div className="flex-shrink-0 bg-white border-b border-stone-100 shadow-sm">
         <div className="max-w-screen-xl mx-auto">
           <FilterBar
+            zones={zones}
             selectedZone={selectedZone}
             selectedType={selectedType}
             onZoneChange={setSelectedZone}
@@ -145,10 +163,11 @@ export default function App() {
         </div>
       </div>
 
-      {/* Main content */}
+      {/* ── Main content ── */}
       <div className="flex-1 min-h-0 overflow-hidden">
-        <div className="relative h-full md:flex md:gap-0 md:max-w-screen-xl md:w-full md:mx-auto">
-          {/* Map: fills screen on mobile, left panel on desktop */}
+        <div className="relative h-full md:flex md:max-w-screen-xl md:w-full md:mx-auto">
+
+          {/* Map */}
           <div className="absolute inset-0 md:static md:flex-[3]">
             <Map
               gelaterie={filtered}
@@ -159,31 +178,46 @@ export default function App() {
             />
           </div>
 
-          {/* List: bottom sheet on mobile, right sidebar on desktop */}
+          {/* List */}
           <div
             className={
-              'absolute bottom-0 left-0 right-0 max-h-[52vh] overflow-y-auto bg-white rounded-t-2xl shadow-2xl ' +
-              'md:static md:flex-[2] md:max-h-none md:rounded-none md:shadow-none md:border-l-2 md:border-stone-200 ' +
+              'absolute bottom-0 left-0 right-0 max-h-[54vh] overflow-y-auto bg-white rounded-t-2xl shadow-2xl ' +
+              'md:static md:flex-[2] md:max-h-none md:rounded-none md:shadow-none md:border-l-2 md:border-stone-100 ' +
               'gelato-list'
             }
           >
-            <div className="flex justify-center pt-3 pb-1 flex-shrink-0 md:hidden">
-              <div className="w-10 h-1 bg-stone-300 rounded-full" />
+            {/* Mobile handle */}
+            <div className="md:hidden">
+              <div className="drag-handle" />
+              <p className="text-[11px] text-center text-stone-400 pb-2 font-medium">
+                {filtered.length} gelaterie trovate
+              </p>
             </div>
-            <p className="text-[11px] text-center text-muted pb-2 md:hidden">
-              {filtered.length} gelaterie
-            </p>
-            <div className="px-4 pb-10 md:px-5 md:py-5 space-y-4">
+
+            {/* Desktop header */}
+            <div className="hidden md:flex items-center justify-between px-5 pt-4 pb-2">
+              <p className="text-sm font-bold text-stone-700">
+                {filtered.length} gelaterie
+              </p>
+              {selectedZone !== 'Tutti' && (
+                <span className="text-xs bg-pistachio-light text-pistachio-dark font-semibold px-2.5 py-1 rounded-full animate-pop-in">
+                  {selectedZone}
+                </span>
+              )}
+            </div>
+
+            <div className="px-4 pb-10 md:px-5 md:pb-8 space-y-4">
               {filtered.length === 0 ? (
                 <EmptyState />
               ) : (
-                filtered.map((g) => (
+                filtered.map((g, i) => (
                   <GelatoCard
                     key={g.id}
                     gelateria={g}
                     isActive={g.id === activeId}
                     onClick={handleCardClick}
                     userLocation={userLocation}
+                    index={i}
                   />
                 ))
               )}

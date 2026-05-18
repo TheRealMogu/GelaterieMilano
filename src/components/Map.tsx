@@ -6,13 +6,20 @@ import type { Gelateria, UserLocation } from '../App'
 
 const MILAN_CENTER: [number, number] = [45.4654, 9.1866]
 
+const HEADER_COLORS: Record<Gelateria['type'], string> = {
+  artigianale: '#5B7B5A',
+  cremeria:    '#C4883A',
+  granite:     '#3A7BC8',
+  yogurt:      '#D95F6A',
+}
+
 function makeEmojiIcon(active: boolean) {
   return L.divIcon({
     html: `<div class="emoji-marker${active ? ' emoji-marker-active' : ''}">🍦</div>`,
     className: '',
     iconSize: [40, 40],
     iconAnchor: [20, 36],
-    popupAnchor: [0, -36],
+    popupAnchor: [0, -38],
   })
 }
 
@@ -57,8 +64,8 @@ export default function Map({ gelaterie, activeId, onMarkerClick, mapRef, userLo
           <>
             <CircleMarker
               center={[userLocation.lat, userLocation.lng]}
-              radius={22}
-              pathOptions={{ color: '#3b82f6', weight: 1, fillColor: '#3b82f6', fillOpacity: 0.13 }}
+              radius={24}
+              pathOptions={{ color: '#3b82f6', weight: 1, fillColor: '#3b82f6', fillOpacity: 0.1 }}
               interactive={false}
             />
             <CircleMarker
@@ -68,7 +75,7 @@ export default function Map({ gelaterie, activeId, onMarkerClick, mapRef, userLo
             >
               <Popup>
                 <div className="p-3">
-                  <p className="font-semibold text-stone-800 text-sm">📍 La tua posizione</p>
+                  <p className="font-bold text-stone-800 text-sm">📍 La tua posizione</p>
                   <p className="text-xs text-stone-500 mt-0.5">Lista ordinata per distanza</p>
                 </div>
               </Popup>
@@ -85,39 +92,57 @@ export default function Map({ gelaterie, activeId, onMarkerClick, mapRef, userLo
             eventHandlers={{ click: () => onMarkerClick(g.id) }}
           >
             <Popup>
-              <div className="p-3">
-                <p className="font-semibold text-stone-800 text-sm">{g.name}</p>
-                <p className="text-xs text-stone-500 mt-0.5">{g.address}</p>
-                <p className="text-xs text-stone-600 mt-2">
-                  <span className="font-medium">✨ Da provare:</span> {g.mustTry}
-                </p>
-                {g.website && (
-                  <a
-                    href={g.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-[#00897b] hover:underline mt-1.5 block"
-                  >
-                    Visita il sito ↗
-                  </a>
-                )}
-                <div className="flex gap-1.5 mt-2">
-                  <a
-                    href={`https://www.google.com/maps/dir/?api=1&destination=${g.lat},${g.lng}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 px-2 py-1 rounded bg-blue-50 hover:bg-blue-100 text-blue-600 text-[10px] font-medium"
-                  >
-                    📍 Naviga
-                  </a>
-                  <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(g.name + ' ' + g.address)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1 px-2 py-1 rounded bg-amber-50 hover:bg-amber-100 text-amber-600 text-[10px] font-medium"
-                  >
-                    ⭐ Recensioni
-                  </a>
+              <div>
+                {/* Popup color header */}
+                <div
+                  className="h-10 flex items-center px-3 gap-2"
+                  style={{ background: HEADER_COLORS[g.type] }}
+                >
+                  <span className="text-white/80 text-lg">🍦</span>
+                  <span className="text-white text-[10px] font-bold uppercase tracking-wide">
+                    {g.zone}
+                  </span>
+                  <span className="ml-auto text-amber-300 text-xs font-bold">★ {g.rating.toFixed(1)}</span>
+                </div>
+
+                {/* Popup body */}
+                <div className="p-3">
+                  <p className="font-bold text-stone-800 text-sm leading-tight">{g.name}</p>
+                  <p className="text-xs text-stone-500 mt-0.5">{g.address}</p>
+                  <p className="text-xs text-stone-600 mt-2">
+                    <span className="font-semibold text-pistachio-dark">✦ Da provare:</span> {g.mustTry}
+                  </p>
+
+                  {/* Action links */}
+                  <div className="flex gap-1.5 mt-2.5">
+                    <a
+                      href={`https://www.google.com/maps/dir/?api=1&destination=${g.lat},${g.lng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 text-center py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-600 text-[10px] font-bold transition-colors"
+                    >
+                      📍 Naviga
+                    </a>
+                    <a
+                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(g.name + ' ' + g.address)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 text-center py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-600 text-[10px] font-bold transition-colors"
+                    >
+                      ⭐ Recensioni
+                    </a>
+                  </div>
+
+                  {g.website && (
+                    <a
+                      href={g.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block text-center text-xs text-pistachio hover:underline mt-1.5 font-medium"
+                    >
+                      Visita il sito ↗
+                    </a>
+                  )}
                 </div>
               </div>
             </Popup>
