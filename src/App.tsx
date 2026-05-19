@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useMemo } from 'react'
+import L from 'leaflet'
 import type { Map as LeafletMap } from 'leaflet'
 import gelaterie from './data/gelaterie.json'
 import FilterBar from './components/FilterBar'
@@ -27,6 +28,9 @@ export interface UserLocation {
 }
 
 const data = gelaterie as Gelateria[]
+
+// Height of the open bottom sheet in vh (keep in sync with CSS)
+const SHEET_OPEN_VH = 0.62
 
 function IceCreamLogo({ size = 24, className = '' }: { size?: number; className?: string }) {
   return (
@@ -65,6 +69,7 @@ export default function App() {
   const [activeId, setActiveId]         = useState<number | null>(null)
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null)
   const [geoStatus, setGeoStatus]       = useState<'idle' | 'loading' | 'denied' | 'unavailable'>('idle')
+  const [sheetOpen, setSheetOpen]       = useState(false)
   const mapRef = useRef<LeafletMap | null>(null)
 
   const zones = useMemo(() => {
@@ -88,25 +93,49 @@ export default function App() {
     return list
   }, [selectedZone, selectedType, userLocation])
 
+  const panToGelateria = useCallback((g: Gelateria, openSheet: boolean) => {
+    const map = mapRef.current
+    if (!map) return
+    const zoom = 16
+    const isMobile = window.innerWidth < 768
+
+    if (isMobile && openSheet) {
+      // Shift the map center so the pin is visible above the open bottom sheet.
+      // setView centers on the given latLng; we offset the center southward by
+      // half the sheet height so the pin ends up in the upper visible area.
+      const sheetPx = window.innerHeight * SHEET_OPEN_VH
+      const yOffsetPx = sheetPx / 2
+      const pinPoint = map.project(L.latLng(g.lat, g.lng), zoom)
+      const adjustedPoint = pinPoint.add([0, yOffsetPx])
+      const adjustedCenter = map.unproject(adjustedPoint, zoom)
+      map.setView(adjustedCenter, zoom, { animate: true })
+    } else {
+      map.setView([g.lat, g.lng], zoom, { animate: true })
+    }
+  }, [])
+
+  const handleCardClick = useCallback((g: Gelateria) => {
+    setActiveId(g.id)
+    setSheetOpen(true)
+    panToGelateria(g, true)
+  }, [panToGelateria])
+
+  const handleMarkerClick = useCallback((id: number) => {
+    setActiveId(id)
+    const g = data.find((x) => x.id === id)
+    if (g) panToGelateria(g, sheetOpen)
+  }, [panToGelateria, sheetOpen])
+
   const handleZoneChange = useCallback((zone: string) => {
     setSelectedZone(zone)
     setActiveId(null)
+    setSheetOpen(false)
   }, [])
 
   const handleTypeChange = useCallback((type: string) => {
     setSelectedType(type)
     setActiveId(null)
-  }, [])
-
-  const handleCardClick = useCallback((g: Gelateria) => {
-    setActiveId(g.id)
-    if (mapRef.current) {
-      mapRef.current.setView([g.lat, g.lng], 16, { animate: true })
-    }
-  }, [])
-
-  const handleMarkerClick = useCallback((id: number) => {
-    setActiveId(id)
+    setSheetOpen(false)
   }, [])
 
   const requestLocation = useCallback(() => {
@@ -177,7 +206,7 @@ export default function App() {
       <div className="flex-1 min-h-0 overflow-hidden">
         <div className="relative h-full md:flex md:max-w-screen-xl md:w-full md:mx-auto">
 
-          {/* Map */}
+          {/* Map — full screen on mobile, left panel on desktop */}
           <div className="absolute inset-0 md:static md:flex-[3]">
             <Map
               gelaterie={filtered}
@@ -188,27 +217,44 @@ export default function App() {
             />
           </div>
 
-          {/* List */}
+          {/* ── Bottom sheet (mobile) / Right sidebar (desktop) ── */}
           <div
-            className={
-              'absolute bottom-0 left-0 right-0 max-h-[54vh] overflow-y-auto bg-white rounded-t-2xl shadow-2xl ' +
-              'md:static md:flex-[2] md:max-h-none md:rounded-none md:shadow-none md:border-l md:border-stone-200 ' +
-              'gelato-list'
-            }
+            className={[
+              // Mobile: absolute bottom sheet with slide animation
+              'absolute bottom-0 left-0 right-0',
+              'h-[62vh] bg-white rounded-t-2xl shadow-2xl gelato-list',
+              'transition-transform duration-300 ease-out will-change-transform',
+              sheetOpen ? 'translate-y-0 overflow-y-auto' : 'translate-y-[calc(62vh-116px)] overflow-hidden',
+              // Desktop: static sidebar
+              'md:static md:translate-y-0 md:h-auto md:max-h-none md:overflow-y-auto',
+              'md:rounded-none md:shadow-none md:border-l md:border-stone-200 md:flex-[2]',
+            ].join(' ')}
           >
-            {/* Mobile handle */}
-            <div className="md:hidden">
-              <div className="drag-handle" />
-              <p className="text-[11px] text-center text-stone-400 pb-2 font-medium">
-                {filtered.length} gelaterie trovate
-              </p>
-            </div>
+            {/* ── Mobile handle (tap to toggle) ── */}
+            <button
+              className="md:hidden w-full flex flex-col items-center pt-2.5 pb-1 flex-shrink-0 focus:outline-none"
+              onClick={() => setSheetOpen((v) => !v)}
+              aria-label={sheetOpen ? 'Chiudi lista' : 'Apri lista'}
+            >
+              <div className="w-10 h-1 bg-stone-300 rounded-full" />
+              <div className="flex items-center gap-2 mt-2 mb-0.5">
+                <span className="text-xs font-semibold text-stone-600">
+                  {filtered.length} gelaterie
+                </span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  className={`w-3.5 h-3.5 text-stone-400 transition-transform duration-300 ${sheetOpen ? 'rotate-180' : ''}`}
+                >
+                  <path fillRule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06z" clipRule="evenodd" />
+                </svg>
+              </div>
+            </button>
 
             {/* Desktop header */}
             <div className="hidden md:flex items-center justify-between px-5 pt-4 pb-2">
-              <p className="text-sm font-bold text-stone-700">
-                {filtered.length} gelaterie
-              </p>
+              <p className="text-sm font-bold text-stone-700">{filtered.length} gelaterie</p>
               {selectedZone !== 'Tutti' && (
                 <span className="text-xs bg-pistachio-light text-pistachio-dark font-semibold px-2.5 py-1 rounded-full animate-pop-in">
                   {selectedZone}
@@ -216,6 +262,7 @@ export default function App() {
               )}
             </div>
 
+            {/* Card list */}
             <div key={`${selectedZone}|${selectedType}`} className="px-4 pb-10 md:px-5 md:pb-8 space-y-4">
               {filtered.length === 0 ? (
                 <EmptyState />
