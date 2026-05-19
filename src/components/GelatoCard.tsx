@@ -52,26 +52,31 @@ export default function GelatoCard({ gelateria: g, isActive, onClick, userLocati
   const mapsUrl   = `https://www.google.com/maps/dir/?api=1&destination=${g.lat},${g.lng}`
   const reviewUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(g.name + ' ' + g.address)}`
 
+  // Cap stagger at index 10 to avoid multi-second delays with large lists
+  const delay = Math.min(index, 10) * 0.045
+
   return (
-    <button
+    // div instead of button avoids invalid HTML nesting of <a> inside <button>
+    <div
+      role="button"
+      tabIndex={0}
       onClick={() => onClick(g)}
-      className={`gelato-card w-full text-left rounded-2xl overflow-hidden bg-white border transition-colors duration-150 animate-fade-slide-up ${
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onClick(g) }}
+      className={`gelato-card cursor-pointer w-full text-left rounded-2xl overflow-hidden bg-white border animate-fade-slide-up ${
         isActive
           ? 'border-pistachio ring-2 ring-pistachio/25 shadow-lg'
           : 'border-stone-100 shadow-sm hover:border-stone-200'
       }`}
-      style={{ animationDelay: `${index * 0.045}s` }}
+      style={{ animationDelay: `${delay}s` }}
     >
       {/* ── Gradient header ── */}
       <div
         className="relative h-[72px] flex-shrink-0 overflow-hidden"
         style={{ background: HEADER_GRADIENTS[g.type] }}
       >
-        {/* Decorative blobs */}
         <div className="absolute -top-4 -right-4 w-24 h-24 rounded-full bg-white/10" />
         <div className="absolute -bottom-6 -left-4 w-20 h-20 rounded-full bg-black/10" />
 
-        {/* Type + Zone badges */}
         <div className="absolute top-3 left-3 flex gap-1.5 z-10">
           <span className="text-[10px] font-semibold bg-white/20 backdrop-blur-sm text-white px-2.5 py-1 rounded-full">
             {TYPE_LABELS[g.type]}
@@ -81,7 +86,6 @@ export default function GelatoCard({ gelateria: g, isActive, onClick, userLocati
           </span>
         </div>
 
-        {/* Large emoji */}
         <div className="absolute bottom-1.5 right-3 text-4xl opacity-75 select-none">
           {TYPE_EMOJIS[g.type]}
         </div>
@@ -89,22 +93,16 @@ export default function GelatoCard({ gelateria: g, isActive, onClick, userLocati
 
       {/* ── Content ── */}
       <div className="p-4">
-        {/* Name + rating */}
         <h3 className="font-bold text-[15px] text-stone-800 leading-tight">{g.name}</h3>
         <StarRating rating={g.rating} />
 
-        {/* Address + distance */}
         <p className="text-xs text-stone-500 mt-1.5 truncate">
           {g.address}
           {distance !== null && (
-            <>
-              {' · '}
-              <span className="font-semibold text-pistachio">{formatDistance(distance)}</span>
-            </>
+            <> · <span className="font-semibold text-pistachio">{formatDistance(distance)}</span></>
           )}
         </p>
 
-        {/* Must-try pill */}
         <div className="mt-3 inline-flex items-center gap-1.5 bg-pistachio-light px-3 py-1.5 rounded-full max-w-full">
           <span className="text-pistachio text-[10px] font-bold flex-shrink-0">✦</span>
           <span className="text-[11px] text-pistachio-dark font-medium truncate">
@@ -114,7 +112,6 @@ export default function GelatoCard({ gelateria: g, isActive, onClick, userLocati
 
         {/* ── Footer ── */}
         <div className="mt-3 pt-3 border-t border-stone-100 flex items-center gap-2 flex-wrap">
-          {/* Links */}
           <div className="flex gap-2 flex-1 min-w-0">
             {g.instagram && (
               <span className="text-[10px] text-stone-400 truncate">{g.instagram}</span>
@@ -132,7 +129,6 @@ export default function GelatoCard({ gelateria: g, isActive, onClick, userLocati
             )}
           </div>
 
-          {/* CTA buttons */}
           <div className="flex gap-1.5 flex-shrink-0">
             <a
               href={mapsUrl}
@@ -161,6 +157,6 @@ export default function GelatoCard({ gelateria: g, isActive, onClick, userLocati
           </div>
         </div>
       </div>
-    </button>
+    </div>
   )
 }

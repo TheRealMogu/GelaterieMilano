@@ -1,7 +1,7 @@
 import type { UserLocation } from '../App'
 
 const TYPE_OPTIONS = [
-  { value: 'Tutti',       label: 'Tutti i tipi' },
+  { value: 'Tutti',       label: 'Tutti' },
   { value: 'artigianale', label: '🍦 Artigianale' },
   { value: 'cremeria',    label: '🍨 Cremeria' },
   { value: 'granite',     label: '🧊 Granite' },
@@ -23,9 +23,9 @@ interface Props {
   onClearLocation: () => void
 }
 
-const pill = 'px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 border select-none'
-const pillOff = 'bg-white border-stone-200 text-stone-600 hover:border-pistachio/50 hover:text-pistachio active:scale-95'
-const pillOn  = 'bg-pistachio border-pistachio text-white pill-active active:scale-95'
+const pill = 'cursor-pointer px-3.5 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-150 border select-none active:scale-95'
+const pillOff = 'bg-white border-stone-200 text-stone-600 hover:border-pistachio/50 hover:text-pistachio'
+const pillOn  = 'bg-pistachio border-pistachio text-white pill-active'
 
 export default function FilterBar({
   zones,
@@ -42,17 +42,17 @@ export default function FilterBar({
   const geoActive   = !!userLocation
   const geoDisabled = geoStatus === 'loading'
   const geoLabel =
-    geoStatus === 'loading'    ? '...'
-    : geoStatus === 'denied'   ? 'Permesso negato'
-    : geoStatus === 'unavailable' ? 'Non disponibile'
-    : geoActive                ? 'Vicino a te ✕'
+    geoStatus === 'loading'       ? '⏳ ...'
+    : geoStatus === 'denied'      ? '🚫 Negato'
+    : geoStatus === 'unavailable' ? 'N/D'
+    : geoActive                   ? 'Vicino a te ✕'
     : '📍 Vicino a me'
 
   return (
     <div className="px-4 py-2.5 space-y-2">
       {/* ── Row 1: Zone ── */}
       <div className="flex items-center gap-2">
-        <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest flex-shrink-0 w-8">
+        <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest flex-shrink-0 w-9">
           Zona
         </span>
         <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
@@ -70,10 +70,10 @@ export default function FilterBar({
 
       {/* ── Row 2: Type + Geo + Count ── */}
       <div className="flex items-center gap-2">
-        <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest flex-shrink-0 w-8">
+        <span className="text-[10px] font-bold text-stone-400 uppercase tracking-widest flex-shrink-0 w-9">
           Tipo
         </span>
-        <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-0.5 flex-1">
+        <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-0.5 flex-1 min-w-0">
           {TYPE_OPTIONS.map(({ value, label }) => (
             <button
               key={value}
@@ -85,10 +85,8 @@ export default function FilterBar({
           ))}
         </div>
 
-        {/* Divider */}
         <div className="w-px h-5 bg-stone-200 flex-shrink-0" />
 
-        {/* Geo button */}
         <button
           onClick={geoActive ? onClearLocation : onRequestLocation}
           disabled={geoDisabled}
@@ -97,8 +95,7 @@ export default function FilterBar({
           {geoLabel}
         </button>
 
-        {/* Count badge */}
-        <span className="flex-shrink-0 bg-stone-100 text-stone-600 text-[10px] font-bold px-2.5 py-1.5 rounded-full tabular-nums">
+        <span className="flex-shrink-0 bg-stone-100 text-stone-600 text-[10px] font-bold px-2.5 py-1.5 rounded-full tabular-nums min-w-[28px] text-center">
           {count}
         </span>
       </div>

@@ -88,6 +88,16 @@ export default function App() {
     return list
   }, [selectedZone, selectedType, userLocation])
 
+  const handleZoneChange = useCallback((zone: string) => {
+    setSelectedZone(zone)
+    setActiveId(null)
+  }, [])
+
+  const handleTypeChange = useCallback((type: string) => {
+    setSelectedType(type)
+    setActiveId(null)
+  }, [])
+
   const handleCardClick = useCallback((g: Gelateria) => {
     setActiveId(g.id)
     if (mapRef.current) {
@@ -152,8 +162,8 @@ export default function App() {
             zones={zones}
             selectedZone={selectedZone}
             selectedType={selectedType}
-            onZoneChange={setSelectedZone}
-            onTypeChange={setSelectedType}
+            onZoneChange={handleZoneChange}
+            onTypeChange={handleTypeChange}
             count={filtered.length}
             userLocation={userLocation}
             geoStatus={geoStatus}
@@ -182,7 +192,7 @@ export default function App() {
           <div
             className={
               'absolute bottom-0 left-0 right-0 max-h-[54vh] overflow-y-auto bg-white rounded-t-2xl shadow-2xl ' +
-              'md:static md:flex-[2] md:max-h-none md:rounded-none md:shadow-none md:border-l-2 md:border-stone-100 ' +
+              'md:static md:flex-[2] md:max-h-none md:rounded-none md:shadow-none md:border-l md:border-stone-200 ' +
               'gelato-list'
             }
           >
@@ -206,7 +216,7 @@ export default function App() {
               )}
             </div>
 
-            <div className="px-4 pb-10 md:px-5 md:pb-8 space-y-4">
+            <div key={`${selectedZone}|${selectedType}`} className="px-4 pb-10 md:px-5 md:pb-8 space-y-4">
               {filtered.length === 0 ? (
                 <EmptyState />
               ) : (
